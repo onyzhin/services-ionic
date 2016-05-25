@@ -1,0 +1,117 @@
+<ion-view view-title="Вода">
+	<div class="tabs tabs-positive">
+	  <a class="tab-item" ng-class="{active: isSelected('Калькулятор')}" ng-click="selectTab('Калькулятор')">
+		Калькулятор
+	  </a>
+	  <a class="tab-item" ng-class="{active: isSelected('Тарифи')}" ng-click="selectTab('Тарифи')">
+		Тарифи
+	  </a>
+	  <a class="tab-item" ng-class="{active: isSelected('Історія')}" ng-click="selectTab('Історія')">
+		Історія
+	  </a>
+	</div>	
+	<div class="tab-inner calculator" ng-show="isSelected('Калькулятор')">
+		<ion-content>
+			<div class="list">
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Поточні показники</span>
+					<input type="text" placeholder="0"
+						ng-model="temp.curr"
+						ng-init="temp.curr=10" >
+				</label>
+				<label class="item item-input item-floating-label">
+					<span class="input-label">Попередні показники</span>
+					<input type="text" placeholder="Попередні показники"
+						ng-model="temp.prev"
+						ng-init="temp.prev=lastRate(water)" >
+				</label>
+			</div> 			
+			<div class="padding">
+				<h5>Різниця: {{ difference() }}</h5>
+				<h4>До сплати: <em>{{ calculate(water) }}</em></h4>
+				<button class="button button-block button-balanced icon ion-android-archive" ng-show="calculate(water)" ng-click="createRecord(water)"></button>
+			</div>	
+		</ion-content>
+	</div>
+	<div class="tab-inner tariffs" ng-show="isSelected('Тарифи')">
+		<ion-content>
+			<div class="panel-container">
+				<div class="panel-heading padding">
+					<h3 class="panel-title">
+						<span>Тарифи</span>
+					</h3>
+				</div>
+				<div class="panel-body" ng-init="getTariffs(water)">	
+					<div class="row">
+						<div class="col col-33">кВт/год</div>
+						<div class="col col-33">грн</div>
+						<div class="col col-33"></div>
+					</div>
+					<div class="row" ng-repeat="tariff in water.data.tariffs track by $index">
+						<div class="col col-33">
+							<label class="item item-input item-stacked-label">
+								<input type="text" placeholder="0"									
+									ng-model="tariff.rate" 
+									toggleClass="edditing" >
+							</label>
+						</div>
+						<div class="col col-33">
+							<label class="item item-input item-stacked-label">
+								<input type="text" placeholder="0"									
+									ng-model="tariff.price" 
+									toggleClass="edditing" >
+							</label>
+						</div>
+						<div class="col col-33">
+							<button class="button button-small button-positive icon ion-edit" ng-click="saveTariff(water)" title="редагувати"></button>
+							<button class="button button-small button-assertive icon ion-trash-a" ng-click="removeTariff(water, $index)" title="видалити"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-container padding">
+					<label class="item item-input">
+						<span class="input-label">кВт/год</span>
+						<input type="text" placeholder="0"									
+							ng-model="tariff.rate" >
+					</label>
+					<label class="item item-input">
+						<span class="input-label">грн</span>
+						<input type="text" placeholder="0"									
+							ng-model="tariff.price" >
+					</label>
+					<button class="button button-block button-balanced icon ion-android-archive" ng-click="createTariff(water)"></button>
+			
+			</div>
+		</ion-content>
+	</div>
+	<div class="tab-inner history" ng-show="isSelected('Історія')" ng-init="getRecords(water)">
+		<ion-content>
+			<div class="padding">
+				<h3>Історія</h3>
+				<div class="list list-inset">
+				  <label class="item item-input">
+					<i class="icon ion-search placeholder-icon"></i>
+					<input type="text" placeholder="пошук за показником" ng-model="searchString" >
+				  </label>
+				</div>
+				<div class="list">
+					<div class="item item-divider">
+						<div class="row">
+							<div class="col-33">Дата</div>
+							<div class="col-33">Показник</div>
+							<div class="col-33">Ціна (грн)</div>
+						</div>
+					</div>
+					<div class="item" ng-repeat="record in water.data.records | searchFor:searchString">
+						<div class="row">
+							<div class="col-33">{{ formatDate(record.date) }}</div>
+							<div class="col-33">{{ record.rate }}</div>
+							<div class="col-33">{{ record.payment }}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ion-content>
+	</div>
+</ion-view>

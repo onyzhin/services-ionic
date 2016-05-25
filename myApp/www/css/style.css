@@ -1,0 +1,10 @@
+/* Empty. Add your own CSS if you like */
+.item .row{
+	padding: 0 0;
+}
+.panel-body .button-small {
+    padding: 8px 13px 8px;
+}
+.tab-inner.history h3{
+	margin-bottom: 30px;
+}
