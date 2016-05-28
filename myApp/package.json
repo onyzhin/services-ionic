@@ -1,7 +1,7 @@
 {
-  "name": "myapp",
+  "name": "Utilities",
   "version": "1.1.1",
-  "description": "myApp: An Ionic project",
+  "description": "Utilities: personal utilities blog",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",

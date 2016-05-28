@@ -2,9 +2,50 @@
 .item .row{
 	padding: 0 0;
 }
-.panel-body .button-small {
-    padding: 8px 13px 8px;
+.panel-body .button {
+	padding: 9px 16px 9px;
+    margin-top: -1px;
+}
+.panel-body .button:before{
+	font-size: 18px;
+}
+.panel-top{
+	border-bottom: 2px solid #DDD;
+	padding-bottom: 20px;
 }
 .tab-inner.history h3{
 	margin-bottom: 30px;
+}
+.item-input-noborder{
+	border-color: transparent;
+}
+.tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
+    background: #336ED2;
+}
+.has-header {
+    bottom: 50px;
+}
+.row .row{
+	padding: 0;
+}
+label.item{
+	position: relative;
+}
+label.item:before{
+	opacity: 0;
+}
+label.item.error:before{
+	position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #EF473A;
+    font-size: 26px;
+    background: #fff;
+    z-index: 2;	
+	opacity: 1;
+}
+.button.button-block{
+	max-width: 50px;
+    float: right;
 }

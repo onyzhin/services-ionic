@@ -3,50 +3,11 @@
 (function () {
 	var app = angular.module('servicesapp.controllers', []) 
 
-	app.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-
-	  // With the new view caching in Ionic, Controllers are only called
-	  // when they are recreated or on app start, instead of every page change.
-	  // To listen for when this page is active (for example, to refresh data),
-	  // listen for the $ionicView.enter event:
-	  //$scope.$on('$ionicView.enter', function(e) {
-	  //});
-
-	  // Form data for the login modal
-	  $scope.loginData = {};
-
-	  // Create the login modal that we will use later
-	  /*$ionicModal.fromTemplateUrl('templates/login.html', {
-		scope: $scope
-	  }).then(function(modal) {
-		$scope.modal = modal;
-	  });*/
-
-	  // Triggered in the login modal to close it
-	  $scope.closeLogin = function() {
-		$scope.modal.hide();
-	  };
-
-	  // Open the login modal
-	  $scope.login = function() {
-		$scope.modal.show();
-	  };
-
-	  // Perform the login action when the user submits the login form
-	  $scope.doLogin = function() {
-		console.log('Doing login', $scope.loginData);
-
-		// Simulate a login delay. Remove this and replace with your login
-		// code if using a login system
-		$timeout(function() {
-		  $scope.closeLogin();
-		}, 1000);
-	  };
-	});
-
 	app.controller('mainCtrl', 
-		['$scope', '$http', 
-		function ($scope, $http) {	
+		['$scope', '$http', '$ionicPopup', '$timeout',
+		function ($scope, $http, $ionicPopup, $timeout) {	
+			
+			//initial tab open
 			$scope.tab = 'Калькулятор';
 			
 			$scope.isSelected = function(checkTab) {
@@ -60,8 +21,8 @@
 	)
 
 	app.controller('servicesCtrl', 
-		['$scope', '$http', '$log', 'calcService', 'localStorageService',
-		function ($scope, $http, $log, calcService, localStorageService) {
+		['$scope', '$http', '$log', '$ionicPopup', 'calcService', 'localStorageService',
+		function ($scope, $http, $log, $ionicPopup, calcService, localStorageService) {
 			
 		$scope.light = {
 			"name": "Світло",
@@ -103,18 +64,47 @@
 				service.data.tariffs = []; 
 			}	
 		}
+		function SomeClass(){
+			return {
+				title: "myName"
+			}
+		}
+	   
+		$scope.requiredCheck = function (checkform){			
+			return checkform.$invalid && $scope.createTap;
+		}
 		
-		$scope.createTariff = function (service) {
+		$scope.createTariff = function (service, checkform) {
 			//creates a new tariff
-			service.data.tariffs.push($scope.tariff);
-			localStorageService.set(service.storage, service.data.tariffs);
-			$scope.tariff = {};
+			/*$scope.tariff.__proto__ = SomeClass;
+			console.log($scope.tariff.title);*/
+			
+			$scope.createTap = true;
+			
+			if ($scope.tariff.rate != undefined && 
+				$scope.tariff.price != undefined){
+				service.data.tariffs.push($scope.tariff);
+				localStorageService.set(service.storage, service.data.tariffs);
+				$scope.tariff = {};
+				$scope.createTap = false;
+			}
 		};
 
 		$scope.removeTariff = function (service, index) {
 			//removes a tariff
-			service.data.tariffs.splice(index, 1);
-			localStorageService.set(service.storage, service.data.tariffs);
+			var confirmDelete = $ionicPopup.confirm({
+				title: 'Видалення..',
+				template: 'Ви впевнені, що хочете видалити?',
+				cancelText: 'Ні',
+				okText: 'Так'
+			});
+			confirmDelete.then(function(res) {
+				if(res) {		
+					service.data.tariffs.splice(index, 1);
+					localStorageService.set(service.storage, service.data.tariffs);
+				
+				}
+			});
 		};
 			
 		$scope.saveTariff = function(service) {	
@@ -130,28 +120,52 @@
 				service.data.records = [];
 			}
 		}
-	   
+		
 		$scope.createRecord = function (service) {
 			//creates a new record
-			var date = new Date();
-			$scope.record = {
-				date: date,
-				rate: $scope.temp.curr,
-				payment: $scope.calculate(service)				
-			}
-			var lastDateInStorage = (service.data.records.length>0) ?
-				new Date(service.data.records[(service.data.records.length)-1].date) :
-				new Date(1);
-			if (! (date.getMonth() == lastDateInStorage.getMonth() &&
-				date.getFullYear() == lastDateInStorage.getFullYear())
-			){
-				service.data.records.push($scope.record);
-				localStorageService.set(service.hist, service.data.records);
-				$scope.record = {};
-				$scope.prev = $scope.curr;
-				$scope.curr = "";
-				alert('збережено!');
-			} else alert('вже сплачували цього місяця!');
+			var confirmSave = $ionicPopup.confirm({
+				title: 'Збереження..',
+				template: 'Ви впевнені, що хочете зберігти?',
+				cancelText: 'Ні',
+				okText: 'Так'
+			});
+			confirmSave.then(function(res) {
+				if(res) {					
+					var date = new Date();
+					$scope.record = {
+						date: date,
+						rate: $scope.temp.curr,
+						payment: $scope.calculate(service)				
+					}
+					var lastDateInStorage = (service.data.records.length>0) ?
+						new Date(service.data.records[(service.data.records.length)-1].date) :
+						new Date(1);
+					if (! (date.getMonth() == lastDateInStorage.getMonth() &&
+						date.getFullYear() == lastDateInStorage.getFullYear())
+					){
+						service.data.records.push($scope.record);
+						localStorageService.set(service.hist, service.data.records);
+						$scope.record = {};
+						$scope.prev = $scope.curr;
+						$scope.curr = "";
+						$ionicPopup.alert({ 
+							title: 'Зміни збережено!'
+						});
+					} else 
+						$ionicPopup.alert({ 
+							title: 'Помилка',
+							template: 'Вже сплачували цього місяця!',
+							buttons: [{ 
+								text: 'Історія',
+								type: 'button-positive',
+								onTap: function(e) {
+									$scope.selectTab('Історія');
+								}
+							  }
+							]
+						});
+				}
+			});
 		};		
 
 		$scope.difference = function() {

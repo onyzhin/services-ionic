@@ -66,6 +66,8 @@
 					}
 				}
 			})
+		// if none of the above states are matched, use this as the fallback
+		$urlRouterProvider.otherwise('/app/light');
 	});
 
 	app.directive('toggleClass', function() {
@@ -96,7 +98,8 @@
 			searchString = searchString;
 			// Using the forEach helper method to loop through the array
 			angular.forEach(arr, function(item){
-				if(String(item.rate).indexOf(searchString) !== -1){
+				console.log(item.date);
+				if(String(item.date).indexOf(searchString) !== -1){
 					result.push(item);
 				}
 			});

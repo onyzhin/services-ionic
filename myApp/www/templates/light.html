@@ -15,71 +15,92 @@
 			<div class="list">
 				<label class="item item-input item-stacked-label">
 					<span class="input-label">Поточні показники</span>
-					<input type="text" placeholder="0"
+					<input type="number" placeholder="0"
 						ng-model="temp.curr" >
 				</label>
 				<label class="item item-input item-floating-label">
 					<span class="input-label">Попередні показники</span>
-					<input type="text" placeholder="Попередні показники"
+					<input type="number" placeholder="Попередні показники"
 						ng-model="temp.prev"
 						ng-init="temp.prev=lastRate(light)" >
 				</label>
 			</div> 			
-			<div class="padding">
+			<div class="padding" ng-show="difference()">
 				<h5>Різниця: {{ difference() }}</h5>
 				<h4>До сплати: <em>{{ calculate(light) }}</em></h4>
-				<button class="button button-block button-balanced icon ion-android-archive" ng-show="calculate(light)" ng-click="createRecord(light)"></button>
+				<button class="button button-block button-balanced icon ion-checkmark-round" ng-show="calculate(light)" ng-click="createRecord(light)"></button>
 			</div>	
 		</ion-content>
 	</div>
 	<div class="tab-inner tariffs" ng-show="isSelected('Тарифи')">
 		<ion-content>
-			<div class="panel-container">
+			<div class="panel-container panel-top" ng-init="getTariffs(light)" ng-show="light.data.tariffs.length>0">
 				<div class="panel-heading padding">
 					<h3 class="panel-title">
 						<span>Тарифи</span>
 					</h3>
 				</div>
-				<div class="panel-body" ng-init="getTariffs(light)">	
+				<div class="panel-body">	
 					<div class="row">
-						<div class="col col-33">кВт/год</div>
-						<div class="col col-33">грн</div>
-						<div class="col col-33"></div>
+						<div class="col-75">
+							<div class="row">
+								<div class="col col-50">кВт/год</div>
+								<div class="col col-50">грн</div>
+							</div>
+						</div>
 					</div>
 					<div class="row" ng-repeat="tariff in light.data.tariffs track by $index">
-						<div class="col col-33">
-							<label class="item item-input item-stacked-label">
-								<input type="text" placeholder="0"									
-									ng-model="tariff.rate" 
-									toggleClass="edditing" >
-							</label>
+						<div class="col-75">
+							<div class="row">
+								<div class="col col-50">
+									<label class="item item-input item-stacked-label">
+										<input type="number" placeholder="0"									
+											ng-model="tariff.rate" 
+											ng-change="saveTariff(light)"
+											toggleClass="edditing" >
+									</label>
+								</div>
+								<div class="col col-50">
+									<label class="item item-input item-stacked-label">
+										<input type="number" placeholder="0"									
+											ng-model="tariff.price" 
+											ng-change="saveTariff(light)"
+											toggleClass="edditing" >
+									</label>
+								</div>
+							</div>
 						</div>
-						<div class="col col-33">
-							<label class="item item-input item-stacked-label">
-								<input type="text" placeholder="0"									
-									ng-model="tariff.price" 
-									toggleClass="edditing" >
-							</label>
-						</div>
-						<div class="col col-33">
-							<button class="button button-small button-positive icon ion-edit" ng-click="saveTariff(light)" title="редагувати"></button>
+						<div class="col col-25">
 							<button class="button button-small button-assertive icon ion-trash-a" ng-click="removeTariff(light, $index)" title="видалити"></button>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="panel-container padding">
-				<label class="item item-input">
-					<span class="input-label">кВт/год</span>
-					<input type="text" placeholder="0"									
-						ng-model="tariff.rate" >
-				</label>
-				<label class="item item-input">
-					<span class="input-label">грн</span>
-					<input type="text" placeholder="0"									
-						ng-model="tariff.price" >
-				</label>
-				<button class="button button-block button-balanced icon ion-android-archive" ng-click="createTariff(light)"></button>
+			<div class="panel-container padding panel-bottom">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<span>Додати тариф</span>
+					</h4>
+				</div>
+				<form name="addtariff">
+					<label class="item item-input"
+						ng-class="{'error ion-alert-circled': requiredCheck(addtariff.rate)}" >  
+						<span class="input-label">кВт/год</span>
+						<input name="rate" type="number" placeholder="0"	
+							required						
+							ng-model="tariff.rate">
+					</label>
+					<label class="item item-input"
+						ng-class="{'error ion-alert-circled': requiredCheck(addtariff.price)}" >  
+						<span class="input-label">грн</span>
+						<input name="price" type="number" placeholder="0"		
+							required													
+							ng-model="tariff.price" >
+					</label>
+					<button class="button button-block button-balanced icon ion-checkmark-round" 
+						ng-click="createTariff(light, addtariff)">
+					</button>
+				</form>
 			</div>
 		</ion-content>
 	</div>
@@ -90,7 +111,7 @@
 				<div class="list list-inset">
 				  <label class="item item-input">
 					<i class="icon ion-search placeholder-icon"></i>
-					<input type="text" placeholder="пошук за показником" ng-model="searchString" >
+					<input type="number" placeholder="пошук за датою" ng-model="searchString" >
 				  </label>
 				</div>
 				<div class="list">
@@ -98,7 +119,7 @@
 						<div class="row">
 							<div class="col-33">Дата</div>
 							<div class="col-33">Показник</div>
-							<div class="col-33">Ціна (грн)</div>
+							<div class="col-33">Ціна</div>
 						</div>
 					</div>
 					<div class="item" ng-repeat="record in light.data.records | searchFor:searchString">
@@ -110,7 +131,7 @@
 					</div>
 				</div>
 			</div>
-			<a href="#" ng-click="clearAll()">DELETE</a>
+			<a href="#" ng-click="clearAll()" ng-show="false">DELETE</a>
 		</ion-content>
 	</div>
 </ion-view>
