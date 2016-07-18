@@ -1,51 +1,51 @@
 <ion-view view-title="Світло">
 	<div class="tabs tabs-positive" ng-init="getRecords(light)">
-	  <a class="tab-item" ng-class="{active: isSelected('Калькулятор')}" ng-click="selectTab('Калькулятор')">
-		Калькулятор
+	  <a class="tab-item" ng-class="{active: isSelected('Calculator')}" ng-click="selectTab('Calculator')">
+		Calculator
 	  </a>
-	  <a class="tab-item" ng-class="{active: isSelected('Тарифи')}" ng-click="selectTab('Тарифи')">
-		Тарифи
+	  <a class="tab-item" ng-class="{active: isSelected('Tariffs')}" ng-click="selectTab('Tariffs')">
+		Tariffs
 	  </a>
-	  <a class="tab-item" ng-class="{active: isSelected('Історія')}" ng-click="selectTab('Історія')">
-		Історія
+	  <a class="tab-item" ng-class="{active: isSelected('History')}" ng-click="selectTab('History')">
+		History
 	  </a>
 	</div>	
-	<div class="tab-inner calculator" ng-show="isSelected('Калькулятор')" >
+	<div class="tab-inner calculator" ng-show="isSelected('Calculator')" >
 		<ion-content>
 			<div class="list">
 				<label class="item item-input item-stacked-label">
-					<span class="input-label">Поточні показники</span>
+					<span class="input-label">Current indexes</span>
 					<input type="number" placeholder="0"
 						ng-model="temp.curr" >
 				</label>
 				<label class="item item-input item-floating-label">
-					<span class="input-label">Попередні показники</span>
-					<input type="number" placeholder="Попередні показники"
+					<span class="input-label">Previous indexes</span>
+					<input type="number" placeholder="Previous indexes"
 						ng-model="temp.prev"
 						ng-init="temp.prev=lastRate(light)" >
 				</label>
 			</div> 			
 			<div class="padding" ng-show="difference()">
-				<h5>Різниця: {{ difference() }}</h5>
-				<h4>До сплати: <em>{{ calculate(light) }}</em></h4>
+				<h5>Difference: {{ difference() }}</h5>
+				<h4>To pay: <em>{{ calculate(light) }}</em></h4>
 				<button class="button button-block button-balanced icon ion-checkmark-round" ng-show="calculate(light)" ng-click="createRecord(light)"></button>
 			</div>	
 		</ion-content>
 	</div>
-	<div class="tab-inner tariffs" ng-show="isSelected('Тарифи')">
+	<div class="tab-inner tariffs" ng-show="isSelected('Tariffs')">
 		<ion-content>
 			<div class="panel-container panel-top" ng-init="getTariffs(light)" ng-show="light.data.tariffs.length>0">
 				<div class="panel-heading padding">
 					<h3 class="panel-title">
-						<span>Тарифи</span>
+						<span>Tariffs</span>
 					</h3>
 				</div>
 				<div class="panel-body">	
 					<div class="row">
 						<div class="col-75">
 							<div class="row">
-								<div class="col col-50">кВт/год</div>
-								<div class="col col-50">грн</div>
+								<div class="col col-50">kW / h</div>
+								<div class="col col-50">uah</div>
 							</div>
 						</div>
 					</div>
@@ -71,7 +71,7 @@
 							</div>
 						</div>
 						<div class="col col-25">
-							<button class="button button-small button-assertive icon ion-trash-a" ng-click="removeTariff(light, $index)" title="видалити"></button>
+							<button class="button button-small button-assertive icon ion-trash-a" ng-click="removeTariff(light, $index)" title="remove"></button>
 						</div>
 					</div>
 				</div>
@@ -79,20 +79,20 @@
 			<div class="panel-container padding panel-bottom">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<span>Додати тариф</span>
+						<span>add tariff</span>
 					</h4>
 				</div>
 				<form name="addtariff">
 					<label class="item item-input"
 						ng-class="{'error ion-alert-circled': requiredCheck(addtariff.rate)}" >  
-						<span class="input-label">кВт/год</span>
+						<span class="input-label">kW / h</span>
 						<input name="rate" type="number" placeholder="0"	
 							required						
 							ng-model="tariff.rate">
 					</label>
 					<label class="item item-input"
 						ng-class="{'error ion-alert-circled': requiredCheck(addtariff.price)}" >  
-						<span class="input-label">грн</span>
+						<span class="input-label">uah</span>
 						<input name="price" type="number" placeholder="0"		
 							required													
 							ng-model="tariff.price" >
@@ -104,22 +104,22 @@
 			</div>
 		</ion-content>
 	</div>
-	<div class="tab-inner history" ng-show="isSelected('Історія')">
+	<div class="tab-inner history" ng-show="isSelected('History')">
 		<ion-content>
 			<div class="padding">
-				<h3>Історія</h3>
+				<h3>History</h3>
 				<div class="list list-inset">
 				  <label class="item item-input">
 					<i class="icon ion-search placeholder-icon"></i>
-					<input type="number" placeholder="пошук за датою" ng-model="searchString" >
+					<input type="number" placeholder="Search by date" ng-model="searchString" >
 				  </label>
 				</div>
 				<div class="list">
 					<div class="item item-divider">
 						<div class="row">
-							<div class="col-33">Дата</div>
-							<div class="col-33">Показник</div>
-							<div class="col-33">Ціна</div>
+							<div class="col-33">Date</div>
+							<div class="col-33">Index</div>
+							<div class="col-33">Price</div>
 						</div>
 					</div>
 					<div class="item" ng-repeat="record in light.data.records | searchFor:searchString">

@@ -8,7 +8,7 @@
 		function ($scope, $http, $ionicPopup, $timeout) {	
 			
 			//initial tab open
-			$scope.tab = 'Калькулятор';
+			$scope.tab = 'Calculator';
 			
 			$scope.isSelected = function(checkTab) {
 				return this.tab === checkTab;
@@ -25,7 +25,7 @@
 		function ($scope, $http, $log, $ionicPopup, calcService, localStorageService) {
 			
 		$scope.light = {
-			"name": "Світло",
+			"name": "Light",
 			"storage": "light_data", 
 			"hist": "light_history", 
 			"data": {
@@ -34,7 +34,7 @@
 			}
 		};
 		$scope.gas = { 
-			"name": "Газ",
+			"name": "Gas",
 			"storage": "gas_data",
 			"hist": "gas_history", 
 			"data": {
@@ -43,7 +43,7 @@
 			}
 		 };
 		$scope.water = { 
-			"name": "Вода",
+			"name": "Water",
 			"storage": "water_data",
 			"hist": "water_history", 
 			"data": {
@@ -54,7 +54,7 @@
 		
 		$scope.tariff = {};		
 		$scope.temp = {};			
-		$scope.CURRENCY = "грн";		
+		$scope.CURRENCY = "uah";		
 		
 		$scope.getTariffs = function (service) {
 			//fetches tariffs from local storage
@@ -64,20 +64,12 @@
 				service.data.tariffs = []; 
 			}	
 		}
-		function SomeClass(){
-			return {
-				title: "myName"
-			}
-		}
 	   
 		$scope.requiredCheck = function (checkform){			
 			return checkform.$invalid && $scope.createTap;
 		}
 		
 		$scope.createTariff = function (service, checkform) {
-			//creates a new tariff
-			/*$scope.tariff.__proto__ = SomeClass;
-			console.log($scope.tariff.title);*/
 			
 			$scope.createTap = true;
 			
@@ -93,10 +85,10 @@
 		$scope.removeTariff = function (service, index) {
 			//removes a tariff
 			var confirmDelete = $ionicPopup.confirm({
-				title: 'Видалення..',
-				template: 'Ви впевнені, що хочете видалити?',
-				cancelText: 'Ні',
-				okText: 'Так'
+				title: 'Deleting..',
+				template: 'Are you sure?',
+				cancelText: 'No',
+				okText: 'Yes'
 			});
 			confirmDelete.then(function(res) {
 				if(res) {		
@@ -124,10 +116,10 @@
 		$scope.createRecord = function (service) {
 			//creates a new record
 			var confirmSave = $ionicPopup.confirm({
-				title: 'Збереження..',
-				template: 'Ви впевнені, що хочете зберігти?',
-				cancelText: 'Ні',
-				okText: 'Так'
+				title: 'Saving..',
+				template: 'Are you sure?',
+				cancelText: 'No',
+				okText: 'Yes'
 			});
 			confirmSave.then(function(res) {
 				if(res) {					
@@ -149,17 +141,17 @@
 						$scope.prev = $scope.curr;
 						$scope.curr = "";
 						$ionicPopup.alert({ 
-							title: 'Зміни збережено!'
+							title: 'Changes saved!'
 						});
 					} else 
 						$ionicPopup.alert({ 
-							title: 'Помилка',
-							template: 'Вже сплачували цього місяця!',
+							title: 'Mistake',
+							template: 'Already paid this month!',
 							buttons: [{ 
-								text: 'Історія',
+								text: 'History',
 								type: 'button-positive',
 								onTap: function(e) {
-									$scope.selectTab('Історія');
+									$scope.selectTab('History');
 								}
 							  }
 							]

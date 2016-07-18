@@ -1,4 +1,3 @@
-/* Empty. Add your own CSS if you like */
 .item .row{
 	padding: 0 0;
 }
@@ -19,7 +18,9 @@
 .item-input-noborder{
 	border-color: transparent;
 }
-.tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
+.tab-item.tab-item-active, 
+.tab-item.active, 
+.tab-item.activated {
     background: #336ED2;
 }
 .has-header {

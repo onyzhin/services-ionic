@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.myapp392816" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Utilities</name>
   <description>
-        Utilities: personal utilities blog
+        Utilities: payment service
     </description>
-  <author email="o.nyzhin@gmail.com" href="https://github.com/onyzhin/">
-      O Nyzhin
+  <author email="node_ist@massmediagroup.pro" href="https://github.com/node-ist">
+      node_ist
     </author>
   <content src="index.html"/>
   <access origin="*"/>
